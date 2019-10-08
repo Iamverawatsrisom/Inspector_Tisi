@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pasadu/screens/my_stye.dart';
+import 'package:http/http.dart';
+import 'dart:convert'; //ใช้สำหรับถอดรหัส object ให้เป็นสิ่งที่ อ่านได้
 
 class Home extends StatefulWidget {
   @override
@@ -100,7 +102,8 @@ class _HomeState extends State<Home> {
           } else {
             return null;
           }
-        },onSaved: (value){
+        },
+        onSaved: (value) {
           passwordString = value.trim();
         },
       ),
@@ -134,10 +137,73 @@ class _HomeState extends State<Home> {
           if (formKey.currentState.validate()) {
             formKey.currentState.save();
             print('email = $emailString, password = $passwordString');
+            checkAuthen(); //เรียก php
           }
         },
       ),
     );
+  }
+
+// trade  ตรวจสอบ ข้อมูลกับฐาน
+  Future<void> checkAuthen() async {
+    String urlAPI =
+        'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString';
+    Response response = await get(urlAPI);
+    var result = json.decode(response.body);
+    print('result = $result');
+
+    if (result.toString() == 'null') {
+      myAlert('User False', 'No have $emailString in my Database');
+    } else {
+      for (var myData in result) {
+        print('myData = $myData');
+        String truePassword = myData['reg_unmd5'];
+        print('truePassword = $truePassword');
+
+        if (passwordString==truePassword) {
+          print('authen Success');
+          
+        } else {
+          myAlert('Password Flase', 'please Try Agains Password');
+        }
+      }
+    }
+  }
+
+  Widget showTiltle(String title) {
+    return ListTile(
+      leading: Icon(
+        Icons.add_alert,
+        size: 48.0,
+        color: MyStyle().textColor,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: MyStyle().h2,
+          color: MyStyle().textColor,
+        ),
+      ),
+    );
+  }
+
+  void myAlert(String title, String message) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: showTiltle(title),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 
   @override
