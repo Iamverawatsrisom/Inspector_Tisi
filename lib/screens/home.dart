@@ -10,6 +10,7 @@ class _HomeState extends State<Home> {
 // explicit
   bool statusRemember = false; //false => ไม่ save true = save'
   final formKey = GlobalKey<FormState>();
+  String emailString, passwordString;
 
 // method
 
@@ -71,6 +72,9 @@ class _HomeState extends State<Home> {
             return null;
           }
         },
+        onSaved: (value) {
+          emailString = value.trim();
+        },
       ),
     );
   }
@@ -96,6 +100,8 @@ class _HomeState extends State<Home> {
           } else {
             return null;
           }
+        },onSaved: (value){
+          passwordString = value.trim();
         },
       ),
     );
@@ -125,7 +131,10 @@ class _HomeState extends State<Home> {
           style: TextStyle(color: Colors.yellow),
         ),
         onPressed: () {
-          if (formKey.currentState.validate()) {}
+          if (formKey.currentState.validate()) {
+            formKey.currentState.save();
+            print('email = $emailString, password = $passwordString');
+          }
         },
       ),
     );
