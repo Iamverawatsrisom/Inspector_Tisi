@@ -18,8 +18,8 @@ class _HomeState extends State<Home> {
 
   Widget showlogo() {
     return Container(
-      width: 70.0,
-      height: 70.0,
+      width: 60.0,
+      height: 60.0,
       child: Image.asset('images/Login.png'),
     );
   }
@@ -39,9 +39,9 @@ class _HomeState extends State<Home> {
 
   Widget showAppName() {
     return Text(
-      'ร้าน มอก.',
+      'ร้านค้า มอก.\nสำนังานมาตรฐานฯ',
       style: TextStyle(
-        fontSize: 20.0,
+        fontSize: 14.0,
         fontWeight: FontWeight.bold,
         fontStyle: FontStyle.normal,
         color: MyStyle().textColor,
@@ -65,11 +65,11 @@ class _HomeState extends State<Home> {
           labelStyle: TextStyle(color: MyStyle().textColor),
           // helperText: 'ใส่ Email',
           // helperStyle: TextStyle(color: MyStyle().textColor),
-          hintText: 'Exam Mymail.com',
+          hintText: 'ใส่ Email',
         ),
         validator: (String value) {
           if (!((value.contains('@')) && (value.contains('.')))) {
-            return 'Please Keep Email Format';
+            return 'Please Keep Email Format-';
           } else {
             return null;
           }
@@ -94,7 +94,7 @@ class _HomeState extends State<Home> {
           ),
           labelText: 'Password',
           helperText: '',
-          hintText: 'Exam YourPasword',
+          hintText: 'ใส่ รหัสผ่าน',
         ),
         validator: (value) {
           if (value.isEmpty) {
@@ -112,7 +112,7 @@ class _HomeState extends State<Home> {
 
   Widget remmemberCheck() {
     return Container(
-      width: 300.0,
+      width: 350.0,
       child: CheckboxListTile(
         controlAffinity: ListTileControlAffinity.leading,
         title: Text('Remember Me'),
@@ -124,13 +124,13 @@ class _HomeState extends State<Home> {
 
   Widget loginButton() {
     return Container(
-      width: 250.0,
+      width: 150.0,
       child: RaisedButton(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        color: Colors.blue[900],
+        color: Colors.blue[800],
         child: Text(
-          'login',
+          'Login',
           style: TextStyle(color: Colors.yellow),
         ),
         onPressed: () {
@@ -147,24 +147,28 @@ class _HomeState extends State<Home> {
 // trade  ตรวจสอบ ข้อมูลกับฐาน
   Future<void> checkAuthen() async {
     String urlAPI =
-        'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString';
+    //     'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString';
+    // Response response = await get(urlAPI);
+            'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString&reg_unmd5=$passwordString';
     Response response = await get(urlAPI);
+
     var result = json.decode(response.body);
     print('result = $result');
 
     if (result.toString() == 'null') {
-      myAlert('User False', 'No have $emailString in my Database');
+      myAlert('Not Found', 'ไม่พบชื่อหรือpasswordของ\n $emailString \n\nใน ฐานข้อมูล-');
     } else {
       for (var myData in result) {
         print('myData = $myData');
         String truePassword = myData['reg_unmd5'];
         print('truePassword = $truePassword');
 
-        if (passwordString==truePassword) {
-          print('authen Success');
-          
+        if (passwordString == truePassword) {
+          print('Ok');
+          myAlert('OK', 'พบข้อมูล');
         } else {
           myAlert('Password Flase', 'please Try Agains Password');
+          print('authen Success');
         }
       }
     }
@@ -195,8 +199,8 @@ class _HomeState extends State<Home> {
             title: showTiltle(title),
             content: Text(message),
             actions: <Widget>[
-              FlatButton(
-                child: Text('OK'),
+              FlatButton( 
+                child: Text('ตกลง'), 
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -222,7 +226,7 @@ class _HomeState extends State<Home> {
           child: Center(
             child: Form(
               key: formKey,
-              child: Column(
+              child: Column(                
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   showLogoAndName(),
