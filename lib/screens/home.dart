@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pasadu/screens/my_stye.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' show Response, get;
 import 'dart:convert'; //ใช้สำหรับถอดรหัส object ให้เป็นสิ่งที่ อ่านได้
 
 class Home extends StatefulWidget {
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
       children: <Widget>[
         showlogo(),
         SizedBox(
-          width: 20.0,
+          width: 10.0,
         ),
         showAppName(),
       ],
@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
 
   Widget showAppName() {
     return Text(
-      'ร้านค้า มอก.\nสำนังานมาตรฐานฯ',
+      'ร้านค้า มอก.\nสำนักงานมาตรฐานฯ',
       style: TextStyle(
         fontSize: 14.0,
         fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class _HomeState extends State<Home> {
         ),
         validator: (String value) {
           if (!((value.contains('@')) && (value.contains('.')))) {
-            return 'Please Keep Email Format-';
+            return 'โปรดตรวจสอบข้อมูล';
           } else {
             return null;
           }
@@ -98,7 +98,7 @@ class _HomeState extends State<Home> {
         ),
         validator: (value) {
           if (value.isEmpty) {
-            return 'Pleas Type Password';
+            return 'โปรดใส่ Password';
           } else {
             return null;
           }
@@ -112,7 +112,8 @@ class _HomeState extends State<Home> {
 
   Widget remmemberCheck() {
     return Container(
-      width: 350.0,
+      width: 320.0,
+      margin: EdgeInsets.symmetric(horizontal: 40.0),
       child: CheckboxListTile(
         controlAffinity: ListTileControlAffinity.leading,
         title: Text('Remember Me'),
@@ -124,10 +125,11 @@ class _HomeState extends State<Home> {
 
   Widget loginButton() {
     return Container(
-      width: 150.0,
+      width: 100.0,
+      margin: const EdgeInsets.only(left: 160.0, right: 20.0),
       child: RaisedButton(
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
         color: Colors.blue[800],
         child: Text(
           'Login',
@@ -147,28 +149,29 @@ class _HomeState extends State<Home> {
 // trade  ตรวจสอบ ข้อมูลกับฐาน
   Future<void> checkAuthen() async {
     String urlAPI =
-    //     'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString';
-    // Response response = await get(urlAPI);
-            'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString&reg_unmd5=$passwordString';
+        // 'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString';
+        // Response response = await get(urlAPI);
+        'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString&reg_unmd5=$passwordString';
     Response response = await get(urlAPI);
 
     var result = json.decode(response.body);
     print('result = $result');
 
     if (result.toString() == 'null') {
-      myAlert('Not Found', 'ไม่พบชื่อหรือpasswordของ\n $emailString \n\nใน ฐานข้อมูล-');
+      myAlert('Not Found',
+          'ไม่พบชื่อหรือpasswordของ\n $emailString \n\nใน ฐานข้อมูล-');
     } else {
       for (var myData in result) {
         print('myData = $myData');
         String truePassword = myData['reg_unmd5'];
+        String nameAndPass = myData['reg_fname'].toString() + ' ' + myData['reg_lname'].toString();
         print('truePassword = $truePassword');
-
         if (passwordString == truePassword) {
           print('Ok');
-          myAlert('OK', 'พบข้อมูล');
+          myAlert('Found Data', 'พบข้อมูล $nameAndPass');
         } else {
           myAlert('Password Flase', 'please Try Agains Password');
-          print('authen Success');
+          print('--authen Not Success--');
         }
       }
     }
@@ -199,8 +202,8 @@ class _HomeState extends State<Home> {
             title: showTiltle(title),
             content: Text(message),
             actions: <Widget>[
-              FlatButton( 
-                child: Text('ตกลง'), 
+              FlatButton(
+                child: Text('ตกลง'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -226,7 +229,7 @@ class _HomeState extends State<Home> {
           child: Center(
             child: Form(
               key: formKey,
-              child: Column(                
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   showLogoAndName(),
