@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:pasadu/screens/home.dart';
 import 'package:pasadu/screens/my_stye.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyService extends StatefulWidget {
   final String keyRunrecno;
@@ -36,16 +39,103 @@ class _MyServiceState extends State<MyService> {
     if (result != 'null') {
       for (var map in result) {
         setState(() {
-          String name =map['reg_fname'];
-          String surName= map['reg_lname'];
+          String name = map['reg_fname'];
+          String surName = map['reg_lname'];
           loginString = '$name $surName';
         });
       }
     }
   }
 
+  Widget menuHome() {
+    return ListTile(
+      leading: Icon(
+        Icons.home,
+        size: 48.0,
+        color: Colors.blue,
+      ),
+      title: Text('Home'),
+      subtitle: Text('description of Home'),
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget menuPage1() {
+    return ListTile(
+      leading: Icon(
+        Icons.shopping_cart,
+        size: 48.0,
+        color: Colors.green.shade800,
+      ),
+      title: Text('Page1'),
+      subtitle: Text('description of Page1'),
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget menuPage2() {
+    return ListTile(
+      leading: Icon(
+        Icons.shopping_basket,
+        size: 48.0,
+        color: Colors.lime.shade800,
+      ),
+      title: Text('Page2'),
+      subtitle: Text('description of Page2'),
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget menuPage3() {
+    return ListTile(
+      leading: Icon(
+        Icons.room,
+        size: 48.0,
+        color: Colors.purple.shade800,
+      ),
+      title: Text('Page3'),
+      subtitle: Text('description of Page3'),
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget menuSignOut() {
+    return ListTile(
+      leading: Icon(
+        Icons.exit_to_app,
+        size: 48.0,
+        color: Colors.orange.shade800,
+      ),
+      title: Text('Singout and Exit'),
+      subtitle: Text('ออกจากระบบ'),
+      onTap: () {
+        Navigator.of(context).pop();
+        processSingOut();
+      },
+    );
+  }
+
+  Future<void> processSingOut() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
+    MaterialPageRoute materialPageRoute = MaterialPageRoute(builder: (BuildContext context){return Home();});
+    Navigator.of(context).pushAndRemoveUntil(materialPageRoute,(Route <dynamic> route){return false;});
+
+  }
+
   Widget showLogin() {
-    return Text('Login By $loginString');
+    return Text(
+      'Login By $loginString',
+      style: TextStyle(color: Colors.yellow.shade100),
+    );
   }
 
   Widget showAppName() {
@@ -69,6 +159,12 @@ class _MyServiceState extends State<MyService> {
 
   Widget head() {
     return DrawerHeader(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('images/wall.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Column(
         children: <Widget>[
           showLogo(),
@@ -84,6 +180,23 @@ class _MyServiceState extends State<MyService> {
       child: ListView(
         children: <Widget>[
           head(),
+          menuHome(),
+          Divider(
+            thickness: .5,
+          ),
+          menuPage1(),
+          Divider(
+            thickness: .5,
+          ),
+          menuPage2(),
+          Divider(
+            thickness: .5,
+          ),
+          menuPage3(),
+          Divider(
+            thickness: .5,
+          ),
+          menuSignOut(),
         ],
       ),
     );
