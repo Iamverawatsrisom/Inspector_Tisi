@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pasadu/screens/home.dart';
 import 'package:pasadu/screens/my_stye.dart';
+import 'package:pasadu/widget/main_home.dart';
+import 'package:pasadu/widget/page1.dart';
+import 'package:pasadu/widget/page2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyService extends StatefulWidget {
@@ -19,6 +23,7 @@ class _MyServiceState extends State<MyService> {
 // field
   String loginString = '...';
   String runrecnoString;
+  Widget currenWidget = MainHome();
 
 // Method
 
@@ -57,6 +62,9 @@ class _MyServiceState extends State<MyService> {
       title: Text('Home'),
       subtitle: Text('description of Home'),
       onTap: () {
+        setState(() {
+          currenWidget=MainHome();
+        });
         Navigator.of(context).pop();
       },
     );
@@ -72,6 +80,9 @@ class _MyServiceState extends State<MyService> {
       title: Text('Page1'),
       subtitle: Text('description of Page1'),
       onTap: () {
+        setState(() {
+          currenWidget=Page1();
+        });
         Navigator.of(context).pop();
       },
     );
@@ -87,22 +98,26 @@ class _MyServiceState extends State<MyService> {
       title: Text('Page2'),
       subtitle: Text('description of Page2'),
       onTap: () {
+        setState(() {
+          currenWidget=Page2();
+        });
         Navigator.of(context).pop();
       },
     );
   }
 
-  Widget menuPage3() {
+  Widget menuExit() {
     return ListTile(
       leading: Icon(
-        Icons.room,
+        Icons.close,
         size: 48.0,
         color: Colors.purple.shade800,
       ),
-      title: Text('Page3'),
-      subtitle: Text('description of Page3'),
+      title: Text('Exit Program'),
+      subtitle: Text('ออกจากโปรแกรม'),
       onTap: () {
         Navigator.of(context).pop();
+        exit(0);
       },
     );
   }
@@ -192,7 +207,7 @@ class _MyServiceState extends State<MyService> {
           Divider(
             thickness: .5,
           ),
-          menuPage3(),
+          menuExit(),
           Divider(
             thickness: .5,
           ),
@@ -208,7 +223,7 @@ class _MyServiceState extends State<MyService> {
       appBar: AppBar(
         title: Text('My Service'),
       ),
-      body: Text('body'),
+      body: currenWidget,
       drawer: showDrawer(),
     );
   }
