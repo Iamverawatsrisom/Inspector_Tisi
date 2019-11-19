@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pasadu/screens/my_service.dart';
 import 'package:pasadu/screens/my_stye.dart';
 import 'package:http/http.dart' show Response, get;
-import 'dart:convert'; //ใช้สำหรับถอดรหัส object ให้เป็นสิ่งที่ อ่านได้
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart'; //ใช้สำหรับถอดรหัส object ให้เป็นสิ่งที่ อ่านได้
 
 class Home extends StatefulWidget {
   @override
@@ -12,9 +15,26 @@ class _HomeState extends State<Home> {
 // explicit
   bool statusRemember = false; //false => ไม่ save true = save'
   final formKey = GlobalKey<FormState>();
-  String emailString, passwordString;
+  String emailString, passwordString, runrecnoString;
 
 // method
+  @override
+  void initState() {
+    super.initState();
+    checkStatus();
+  }
+
+  Future checkStatus() async {
+    try {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      bool currentRemember = sharedPreferences.getBool('remember');
+      if (currentRemember) {
+        runrecnoString = sharedPreferences.getString('runrecno');
+        routeToMyserveice();
+      }
+    } catch (e) {}
+  }
 
   Widget showlogo() {
     return Container(
@@ -110,7 +130,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget remmemberCheck() {
+  Widget rememberCheck() {
     return Container(
       width: 320.0,
       margin: EdgeInsets.symmetric(horizontal: 40.0),
@@ -118,9 +138,17 @@ class _HomeState extends State<Home> {
         controlAffinity: ListTileControlAffinity.leading,
         title: Text('Remember Me'),
         value: statusRemember,
-        onChanged: (bool value) {},
+        onChanged: (bool value) {
+          onRememberCheck(value);
+        },
       ),
     );
+  }
+
+  void onRememberCheck(bool value) {
+    setState(() {
+      statusRemember = value;
+    });
   }
 
   Widget loginButton() {
@@ -149,32 +177,47 @@ class _HomeState extends State<Home> {
 // trade  ตรวจสอบ ข้อมูลกับฐาน
   Future<void> checkAuthen() async {
     String urlAPI =
-        // 'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString';
-        // Response response = await get(urlAPI);
         'https://appdb.tisi.go.th/ForApp/getUserWhereUserEmailEad.php?isAdd=true&reg_email=$emailString&reg_unmd5=$passwordString';
-    Response response = await get(urlAPI);
 
+    Response response = await get(urlAPI);
     var result = json.decode(response.body);
     print('result = $result');
 
     if (result.toString() == 'null') {
-      myAlert('Not Found',
-          'ไม่พบชื่อหรือpasswordของ\n $emailString \n\nใน ฐานข้อมูล-');
+      myAlert(
+          'authen False', 'No $emailString or $passwordString in my Database');
     } else {
       for (var myData in result) {
-        print('myData = $myData');
-        String truePassword = myData['reg_unmd5'];
-        String nameAndPass = myData['reg_fname'].toString() + ' ' + myData['reg_lname'].toString();
-        print('truePassword = $truePassword');
-        if (passwordString == truePassword) {
-          print('Ok');
-          myAlert('Found Data', 'พบข้อมูล $nameAndPass');
-        } else {
-          myAlert('Password Flase', 'please Try Agains Password');
-          print('--authen Not Success--');
+        runrecnoString = myData['runrecno'];
+        print('runrecno=$runrecnoString');
+
+        if (statusRemember) {
+          // Save runrecno
+          saveuserThread();
         }
+
+        routeToMyserveice();
       }
     }
+  }
+
+  void routeToMyserveice() {
+    MaterialPageRoute materialPageRoute =
+        MaterialPageRoute(builder: (BuildContext context) {
+      return MyService(
+        keyRunrecno: runrecnoString,
+      );
+    });
+    Navigator.of(context).pushAndRemoveUntil(materialPageRoute,
+        (Route<dynamic> route) {
+      return false;
+    });
+  }
+
+  Future<void> saveuserThread() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString('runrecno', runrecnoString);
+    sharedPreferences.setBool('remember', statusRemember);
   }
 
   Widget showTiltle(String title) {
@@ -235,7 +278,7 @@ class _HomeState extends State<Home> {
                   showLogoAndName(),
                   userText(),
                   passwordText(),
-                  remmemberCheck(),
+                  rememberCheck(),
                   loginButton(),
                 ],
               ),
