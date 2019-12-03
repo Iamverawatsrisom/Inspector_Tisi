@@ -99,7 +99,7 @@ class _MyServiceState extends State<MyService> {
       subtitle: Text('description of Map'),
       onTap: () {
         setState(() {
-          currenWidget=Page2();
+          currenWidget=MyMap();
         });
         Navigator.of(context).pop();
       },
