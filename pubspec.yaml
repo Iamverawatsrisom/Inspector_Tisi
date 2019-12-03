@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   http: ^0.12.0+2 #เอามาจาก pub.dev ค้นคำว่า http
   shared_preferences: ^0.5.4+5
+  google_maps_flutter: ^0.5.21+12
 
 dev_dependencies:
   flutter_test:

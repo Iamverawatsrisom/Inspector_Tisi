@@ -77,8 +77,8 @@ class _MyServiceState extends State<MyService> {
         size: 48.0,
         color: Colors.green.shade800,
       ),
-      title: Text('Page1'),
-      subtitle: Text('description of Page1'),
+      title: Text('Page 1'),
+      subtitle: Text('Description Page1'),
       onTap: () {
         setState(() {
           currenWidget=Page1();
@@ -91,12 +91,12 @@ class _MyServiceState extends State<MyService> {
   Widget menuPage2() {
     return ListTile(
       leading: Icon(
-        Icons.shopping_basket,
+        Icons.map,
         size: 48.0,
         color: Colors.lime.shade800,
       ),
-      title: Text('Page2'),
-      subtitle: Text('description of Page2'),
+      title: Text('Show Map'),
+      subtitle: Text('description of Map'),
       onTap: () {
         setState(() {
           currenWidget=Page2();
