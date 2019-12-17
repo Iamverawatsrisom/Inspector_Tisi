@@ -8,7 +8,8 @@ void main() {
 class Myapp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.deepPurple),
       title: 'Inspector',
       home: Home(),
     );
