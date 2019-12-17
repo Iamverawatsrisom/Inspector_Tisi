@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pasadu/models/marker_model.dart';
 import 'package:pasadu/screens/my_stye.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,6 +25,23 @@ class _DetailJobState extends State<DetailJob> {
     currentMarkerModel = widget.markerModel;
   }
 
+  Widget showMapLocation() {
+    LatLng latLng = LatLng(13.766333, 100.526707);
+    CameraPosition cameraPosition = CameraPosition(
+      target: latLng,
+      zoom: 16.0,
+    );
+
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.4,
+      child: GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition: cameraPosition,
+        onMapCreated: (GoogleMapController googleMapController) {},
+      ),
+    );
+  }
+
   Widget cameraButton() {
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
@@ -38,7 +56,6 @@ class _DetailJobState extends State<DetailJob> {
       ),
       onPressed: () {
         cameraOrGallery(ImageSource.camera);
-
       },
     );
   }
@@ -80,7 +97,7 @@ class _DetailJobState extends State<DetailJob> {
   Widget showPic() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.4,
-      child: file == null ? Image.asset('images/pic.png') : Image.file(file)  ,
+      child: file == null ? Image.asset('images/pic.png') : Image.file(file),
     );
   }
 
@@ -132,6 +149,8 @@ class _DetailJobState extends State<DetailJob> {
           showAddress(),
           showPic(),
           showButton(),
+          mySizeBox(),
+          showMapLocation(),
         ],
       ),
     );
