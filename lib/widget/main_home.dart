@@ -59,7 +59,7 @@ class _MainHomeState extends State<MainHome> {
   }
 
   Widget showIcon() {
-    return Icon(Icons.build);
+    return Icon(Icons.crop_din);
   }
 
   Widget showTextType(int index) {
@@ -104,7 +104,8 @@ class _MainHomeState extends State<MainHome> {
             });
             Navigator.of(context).push(materialPageRoute);
           },
-          child: Card(color: index%2 == 0  ? Colors.white38 : Colors.white ,
+          child: Card(
+            color: index % 2 == 0 ? Colors.white38 : Colors.white,
             child: Container(
               margin: EdgeInsets.all(10.0),
               child: Column(
@@ -112,12 +113,26 @@ class _MainHomeState extends State<MainHome> {
                   showTraderName(index),
                   showTextType(index),
                   showTextAddresws(index),
+                  addMoreImage(),
                 ],
               ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget addMoreImage() {
+    return Row(mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add_photo_alternate),
+          onPressed: () {
+            print('You Click Add More');
+          },
+        ),
+      ],
     );
   }
 
