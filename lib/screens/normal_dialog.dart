@@ -21,6 +21,8 @@ Future<void> normalDialog(
       context: context,
       builder: (BuildContext buildContext) {
         return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           title: showTitle(title),
           content: Text(message),
           actions: <Widget>[
@@ -32,9 +34,9 @@ Future<void> normalDialog(
 
 FlatButton okButton(BuildContext context) {
   return FlatButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          );
+    child: Text('OK'),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
 }

@@ -23,6 +23,12 @@ class MyStyle {
     fontWeight: FontWeight.bold,
   );
 
+   TextStyle h4TextStyle = TextStyle(
+    fontSize: 12.0,
+    color: Colors.red,
+    fontWeight: FontWeight.bold,
+  );
+
 // Constructor
   MyStyle();
 }
